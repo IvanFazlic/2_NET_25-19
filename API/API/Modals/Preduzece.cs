@@ -11,6 +11,6 @@ namespace mojePreduzece.Models
         public string? email { get; set; }
         public string? naziv { get; set; }
         public string? adresa { get; set; }
-        public string? PIB { get; set; }
+        public double PIB { get; set; }
     }
 }
