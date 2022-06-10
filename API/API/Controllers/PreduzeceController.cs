@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace mojaKnjizara.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("nesto/[controller]")]
     [ApiController]
     public class PreduzeceController : Controller
     {
@@ -17,7 +17,8 @@ namespace mojaKnjizara.Controllers
             {
              new Preduzece { ime = "Ivan", prezime = "Fazlic", email = "fakiivan@gamil.com", naziv = "random", adresa = "Niksicka", PIB = 323223421143 },
              new Preduzece { ime = "Ivan", prezime = "Faki", email = "fakiivan@gamil.com", naziv = "random", adresa = "Miroslava", PIB = 3232345345 },
-             new Preduzece { ime = "Ivan", prezime = "Nesto", email = "fakiivan@gamil.com", naziv = "random", adresa = "Fakijeva 14", PIB = 323224235254 }
+             new Preduzece { ime = "Ivan", prezime = "Nesto", email = "fakiivan@gamil.com", naziv = "random", adresa = "Fakijeva 14", PIB = 323224235254 },
+             new Preduzece { ime = "Milos", prezime = "Andric", email = "nesto@gamil.com", naziv = "random", adresa = "Neka 14", PIB = 115482185445 }
            };
     [HttpGet]
     public IEnumerable<Preduzece> SvaPreduzeca()
