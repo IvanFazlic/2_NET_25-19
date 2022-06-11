@@ -11,7 +11,7 @@ namespace mojaKnjizara.Controllers
     [ApiController]
     public class PreduzeceController : Controller
     {
-        List<Preduzece> preduzeca = new List<Preduzece>()
+        static List<Preduzece> preduzeca = new List<Preduzece>()
             {
              new Preduzece { ime = "Ivan", prezime = "Fazlic", email = "fakiivan@gamil.com", naziv = "random", adresa = "Niksicka", PIB = 323223421143 },
              new Preduzece { ime = "Ivan", prezime = "Faki", email = "fakiivan@gamil.com", naziv = "random", adresa = "Miroslava", PIB = 3232345345 },
@@ -19,24 +19,24 @@ namespace mojaKnjizara.Controllers
              new Preduzece { ime = "Milos", prezime = "Andric", email = "nesto@gamil.com", naziv = "random", adresa = "Neka 14", PIB = 115482185445 }
            };
 
-        [HttpGet]
-    public IEnumerable<Preduzece> SvaPreduzeca()
+    [HttpGet("vratiSvaPreduzeca")]
+    public IActionResult SvaPreduzeca()
     {
-        return preduzeca;
+        return Ok(preduzeca.OrderBy(Preduzece=>Preduzece.PIB).ThenBy(Preduzece=>Preduzece.naziv));
     }
-    [HttpGet("{PIB}")]
-    public IActionResult JednoPreduzece(double PIB)
-    {
-        var nekoPreduzece = preduzeca.FirstOrDefault((p) => p.PIB == PIB);
-        if (nekoPreduzece == null)
+        [HttpGet("{PIB}")]
+        public IActionResult JednoPreduzece(double PIB)
         {
-            return NotFound("Page not found");
+            var nekoPreduzece = preduzeca.FirstOrDefault((p) => p.PIB == PIB);
+            if (nekoPreduzece == null)
+            {
+                return NotFound("Page not found");
+            }
+            return Ok(nekoPreduzece);
         }
-        return Ok(nekoPreduzece);
-    }
 
         [HttpPost("dodaj")]
-        public string post([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB)
+        public IActionResult postovanje([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB)
         {
             Preduzece preduzece = new Preduzece();
             preduzece.ime = ime;
@@ -46,7 +46,7 @@ namespace mojaKnjizara.Controllers
             preduzece.adresa = adresa;
             preduzece.PIB = PIB;
             preduzeca.Add(preduzece);
-            return "ok";
+            return Ok(preduzece);
         }
 
     }

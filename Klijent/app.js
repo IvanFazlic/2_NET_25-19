@@ -1,6 +1,6 @@
 document.getElementById("prikaz").addEventListener("click",()=>{
 let root=document.getElementById("root")
-let url = "http://localhost:5175/api/Preduzece"
+let url = "http://localhost:5175/api/Preduzece/vratiSvaPreduzeca"
 let brojPreduzeca=1
 root.innerHTML=""
 fetch(url).then(resp=> resp.json()).then((data)=>{
