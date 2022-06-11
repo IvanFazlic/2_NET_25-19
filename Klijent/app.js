@@ -10,7 +10,12 @@ fetch(url).then(resp=> resp.json()).then((data)=>{
         <li id="" name="">${element.email}</li>
         <li id="" name="">${element.naziv}</li>
         <li id="" name="">${element.adresa}</li>
-        <li id="" name="">${element.pib}</li></ul><hr>`
+        <li id="" name="">${element.pib}</li></ul>
+        <h2 onclick="izmenaPreduzeca(${element.pib})">Izmena preduzeca</h2>
+        <hr>`
     });
 }).catch(err=>console.log(err))
+})
+document.getElementById("dodaj").addEventListener("click",()=>{
+    dodajPreduzece();
 })

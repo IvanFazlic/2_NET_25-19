@@ -1,0 +1,11 @@
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\API.exe
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\appsettings.Development.json
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\appsettings.json
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\API.dll
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\API.deps.json
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\API.runtimeconfig.json
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\API.pdb
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Ivan\Desktop\net\API\API\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
