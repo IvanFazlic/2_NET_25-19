@@ -11,11 +11,15 @@ fetch(url).then(resp=> resp.json()).then((data)=>{
         <li id="" name="">${element.naziv}</li>
         <li id="" name="">${element.adresa}</li>
         <li id="" name="">${element.pib}</li></ul>
-        <h2 onclick="izmenaPreduzeca(${element.pib})">Izmena preduzeca</h2>
+        <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenaPreduzeca(${element.pib})">Izmena preduzeca</h3>
         <hr>`
     });
 }).catch(err=>console.log(err))
 })
 document.getElementById("dodaj").addEventListener("click",()=>{
-    dodajPreduzece();
+    DodajPreduzece();
 })
+document.getElementById("pretraga").addEventListener("click",()=>{
+    PretraziPreduzece();
+})
+

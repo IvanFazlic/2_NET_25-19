@@ -19,11 +19,11 @@ namespace mojaKnjizara.Controllers
              new Preduzece { ime = "Milos", prezime = "Andric", email = "nesto@gamil.com", naziv = "random", adresa = "Neka 14", PIB = 115482185445 }
            };
 
-    [HttpGet("vratiSvaPreduzeca")]
-    public IActionResult SvaPreduzeca()
-    {
-        return Ok(preduzeca.OrderBy(Preduzece=>Preduzece.PIB).ThenBy(Preduzece=>Preduzece.naziv));
-    }
+        [HttpGet("vratiSvaPreduzeca")]
+        public IActionResult SvaPreduzeca()
+        {
+            return Ok(preduzeca.OrderBy(Preduzece => Preduzece.PIB).ThenBy(Preduzece => Preduzece.naziv));
+        }
         [HttpGet("{PIB}")]
         public IActionResult JednoPreduzece(double PIB)
         {
@@ -34,6 +34,21 @@ namespace mojaKnjizara.Controllers
             }
             return Ok(nekoPreduzece);
         }
+        [HttpGet("filter/{PIB}")]
+        public IActionResult FilterPreduzece(double PIB)
+        {
+            var nekoPreduzece = preduzeca.Where(enterprise => enterprise.PIB.ToString().Contains(PIB.ToString()));
+            if (nekoPreduzece == null)
+            {
+                return NotFound("Page not found");
+            }
+            return Ok(nekoPreduzece);
+        }
+        [HttpGet("filterPreduzeca")]
+        //public IActionResult Filtriraj(double PIB)
+        //{
+
+        //}
 
         [HttpPost("dodaj")]
         public IActionResult postovanje([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB)
@@ -47,6 +62,23 @@ namespace mojaKnjizara.Controllers
             preduzece.PIB = PIB;
             preduzeca.Add(preduzece);
             return Ok(preduzece);
+        }
+        [HttpPost("izmeniPreduzece/{PARAMETAR}")]
+        public IActionResult izmeniPreduzece([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB, double PARAMETAR)
+        {
+            var obj = preduzeca.FirstOrDefault(x => x.PIB == PARAMETAR);
+            if (obj == null)
+            {
+                return NotFound("Page not found");
+            }
+            obj.ime = ime;
+            obj.prezime = prezime;
+            obj.email = email;
+            obj.naziv = naziv;
+            obj.adresa = adresa;
+            obj.PIB = PIB;
+            return Ok(obj);
+            
         }
 
     }
