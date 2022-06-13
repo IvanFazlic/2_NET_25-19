@@ -13,10 +13,11 @@ namespace mojaKnjizara.Controllers
     {
         static List<Preduzece> preduzeca = new List<Preduzece>()
             {
-             new Preduzece { ime = "Ivan", prezime = "Fazlic", email = "fakiivan@gamil.com", naziv = "random", adresa = "Niksicka", PIB = 323223421143 },
-             new Preduzece { ime = "Ivan", prezime = "Faki", email = "fakiivan@gamil.com", naziv = "random", adresa = "Miroslava", PIB = 3232345345 },
-             new Preduzece { ime = "Ivan", prezime = "Nesto", email = "fakiivan@gamil.com", naziv = "random", adresa = "Fakijeva 14", PIB = 323224235254 },
-             new Preduzece { ime = "Milos", prezime = "Andric", email = "nesto@gamil.com", naziv = "random", adresa = "Neka 14", PIB = 115482185445 }
+             new Preduzece { ime = "Ivan", prezime = "Fazlic", email = "fakiivan@gamil.com", naziv = "random", adresa = "Niksicka", PIB = 111100000 },
+             new Preduzece { ime = "Ivan", prezime = "Fazlic", email = "fakiivan@gamil.com", naziv = "random", adresa = "Niksicka", PIB = 111100001 },
+             new Preduzece { ime = "Ivan", prezime = "Faki", email = "fakiivan@gamil.com", naziv = "random", adresa = "Miroslava", PIB = 111100002 },
+             new Preduzece { ime = "Ivan", prezime = "Nesto", email = "fakiivan@gamil.com", naziv = "random", adresa = "Fakijeva 14", PIB = 111100003 },
+             new Preduzece { ime = "Milos", prezime = "Andric", email = "nesto@gamil.com", naziv = "random", adresa = "Neka 14", PIB = 111100004 }
            };
 
         [HttpGet("vratiSvaPreduzeca")]
@@ -34,22 +35,26 @@ namespace mojaKnjizara.Controllers
             }
             return Ok(nekoPreduzece);
         }
-        [HttpGet("filter/{PIB}")]
-        public IActionResult FilterPreduzece(double PIB)
+        [HttpGet("provera/{PIB}")]
+        public IActionResult ProveraPiv(double PIB)
         {
-            var nekoPreduzece = preduzeca.Where(enterprise => enterprise.PIB.ToString().Contains(PIB.ToString()));
+            var nekoPreduzece = preduzeca.Where((p) => p.PIB == PIB);
             if (nekoPreduzece == null)
             {
                 return NotFound("Page not found");
             }
             return Ok(nekoPreduzece);
         }
-        [HttpGet("filterPreduzeca")]
-        //public IActionResult Filtriraj(double PIB)
-        //{
-
-        //}
-
+        [HttpGet("filter/{PIB}/{Naziv}")]
+        public IActionResult FilterPreduzece(double PIB,string Naziv)
+        {
+            var filterPreduzeca = preduzeca.Where(enterprise => enterprise.PIB.ToString().Contains(PIB.ToString()) && enterprise.naziv.Contains(Naziv));
+            if (filterPreduzeca == null)
+            {
+                return NotFound("Page not found");
+            }
+            return Ok(filterPreduzeca.OrderBy(Preduzece => Preduzece.PIB).ThenBy(Preduzece => Preduzece.naziv));
+        }
         [HttpPost("dodaj")]
         public IActionResult postovanje([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB)
         {
