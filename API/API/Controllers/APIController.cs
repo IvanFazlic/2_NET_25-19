@@ -176,24 +176,13 @@ namespace mojePreduzece.Controllers
             return Ok(sveFakture);
         }
         //ready
-        [HttpGet("{PIB}")]
+        [HttpGet("pronadjiPreduzece/{PIB}")]
         public IActionResult JednoPreduzece(double PIB)
         {
             var nekoPreduzece = preduzeca.FirstOrDefault((p) => p.PIB == PIB);
             if (nekoPreduzece == null)
             {
                 return NotFound("Nije pronadjeno preduzece");
-            }
-            return Ok(nekoPreduzece);
-        }
-        //ready
-        [HttpGet("provera/{PIB}")]
-        public IActionResult ProveraPiv(double PIB)
-        {
-            var nekoPreduzece = preduzeca.Where((p) => p.PIB == PIB);
-            if (nekoPreduzece.Any() == false)
-            {
-                return NotFound("Page not found");
             }
             return Ok(nekoPreduzece);
         }   
@@ -260,17 +249,13 @@ namespace mojePreduzece.Controllers
             {
                 return BadRequest("Vec postoji preduzece sa tim PIB-om");
             }
-            else
-            {
-                obj.ime = ime;
-                obj.prezime = prezime;
-                obj.email = email;
-                obj.naziv = naziv;
-                obj.adresa = adresa;
-                obj.PIB = PIB;
-
-                return Ok(obj);
-            }
+            obj.ime = ime;
+            obj.prezime = prezime;
+            obj.email = email;
+            obj.naziv = naziv;
+            obj.adresa = adresa;
+            obj.PIB = PIB;
+            return Ok(obj);
             
         }
 
