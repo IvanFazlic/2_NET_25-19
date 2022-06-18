@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace mojePreduzece.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class APIController : Controller
     {
