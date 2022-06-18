@@ -13,8 +13,8 @@ const URLovi = {
 }
 interface Faktura{
     id:number
-    PIBkome:number 
-    PIBodKoga:number 
+    piBkome:number 
+    piBodKoga:number 
     datumGenerisanja:Date 
     datumPlacanja:Date
     ukupnaCena:number
@@ -45,6 +45,7 @@ class RadSaPreduzecima{
                 <li id="" name="">Adresa preduzeca: ${preduzece.adresa}</li>
                 <li id="" name="">PIB:${preduzece.pib}</li></ul>
                 <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmeniPreduzeceHTML(${preduzece.pib})">Izmena preduzeca</h3>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${preduzece.pib})">Pregled faktura</h3>
                 <hr>`
         })
         return prikazPreduzeca
@@ -153,12 +154,44 @@ class RadSaPreduzecima{
                     <li id="" name="">Adresa preduzeca: ${element.adresa}</li>
                     <li id="" name="">PIB:${element.pib}</li></ul>
                     <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmeniPreduzeceHTML(${element.pib})">Izmena preduzeca</h3>
+                    <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${element.pib})">Pregled faktura</h3>
                     <hr>`
                     });
                 }
             }).catch(err=>console.log(err))
         })
-        }
+    }}
+}
+class RadSaFakturama{
+    static PregledajFakture(div:HTMLElement,pib:number){
+        alert(pib)
+    }
+    static DetaljiFaktura(fakture:Array<Faktura>){
+        let prikazFaktura:string=""
+        let brojFaktura:number=1;
+        fakture.forEach(faktura=>{
+            prikazFaktura+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.piBkome}">
+                <li id="" name="">PIBkome: ${faktura.piBkome}</li>
+                <li id="" name="">PIBodKoga: ${faktura.piBodKoga}</li>
+                <li id="" name="">DatumGenerisanja fakture : ${faktura.datumGenerisanja}</li>
+                <li id="" name="">DatumPlacanja fakture: ${faktura.datumPlacanja}</li>
+                <li id="" name="">Ukupna cena: ${faktura.ukupnaCena}</li>
+                <li id="" name="">Tip fakture: ${faktura.tipFakture}</li>
+                <li id="" name="">Naziv fakture : ${faktura.naziv}</li>
+                <li id="" name="">Cena po jedinici mere: ${faktura.cenaPoJediniciMere}</li>
+                <li id="" name="">Jedinica mere: ${faktura.jedinicaMere}</li>
+                <li id="" name="">Kolicina: ${faktura.kolicina}</li></ul>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.piBkome})">Izmeni fakturu</h3>
+                <hr>`
+        })
+        return prikazFaktura
+    }
+    static PrikaziFakture(div:HTMLElement){
+        let fakture=[];
+        fetch(URLovi.vratiSveFakture).then(odg=>odg.json()).then(responce=>{
+            console.log(responce)
+            div.innerHTML=`<div>${RadSaFakturama.DetaljiFaktura(responce)}</div>`
+        })
     }
 }
 const PrikaziPreduzcaHTML=()=>{
@@ -172,4 +205,10 @@ const DodajPreduzeceHTML=()=>{
 }
 const PretraziPreduzecaHTML=()=>{
     RadSaPreduzecima.PretraziPreduzeca(document.querySelector("#root") as HTMLElement)
+}
+const PregledajFaktureHTML=(pib)=>{
+    RadSaFakturama.PregledajFakture(document.querySelector("#root") as HTMLElement,pib)
+}
+const PrikaziFaktureHTML=()=>{
+    RadSaFakturama.PrikaziFakture(document.querySelector("#root") as HTMLElement)
 }
