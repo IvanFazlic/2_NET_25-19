@@ -22,8 +22,8 @@ namespace mojePreduzece.Controllers
            };
         static List<Faktura> fakture = new List<Faktura>()
             {
-             new Faktura { id = 1 ,PIBkome = 111100000, PIBodKoga = 111100001, datumGenerisanja =  new DateTime(2022, 7, 24), datumPlacanja = new DateTime(2022, 7, 24), ukupnaCena = 300, tipFakture = "izlazna",naziv= "faktura" ,cenaPoJediniciMere= 100 ,jedinicaMere= "rsd",kolicina = 3},
-             new Faktura { id = 1 ,PIBkome = 111100001, PIBodKoga = 111100000, datumGenerisanja =  new DateTime(2022, 7, 24), datumPlacanja = new DateTime(2022, 7, 24), ukupnaCena = 300, tipFakture = "ulazna",naziv= "faktura" ,cenaPoJediniciMere= 100 ,jedinicaMere= "rsd",kolicina = 3}
+             new Faktura { id = 1 ,PIBkome = 111100000, PIBodKoga = 111100001, datumGenerisanja =  new DateTime(2022, 7, 24), datumPlacanja = new DateTime(2022, 7, 24), ukupnaCena = 300, tipFakture = "izlazna",naziv= "faktura" ,cenaPoJediniciMere= 100 ,jedinicaMere= "RSD",kolicina = 3},
+             new Faktura { id = 1 ,PIBkome = 111100001, PIBodKoga = 111100000, datumGenerisanja =  new DateTime(2022, 7, 24), datumPlacanja = new DateTime(2022, 7, 24), ukupnaCena = 300, tipFakture = "ulazna",naziv= "faktura" ,cenaPoJediniciMere= 100 ,jedinicaMere= "RSD",kolicina = 3}
            };
         //ready
         [HttpPost("unosFakture")]
@@ -75,14 +75,15 @@ namespace mojePreduzece.Controllers
             return Ok(fakture);
         }
         //ready
-        [HttpPost("izmeniFakturu/{id}")]
-        public IActionResult IzmeniFakturu([FromForm] int PIBkome, [FromForm] int PIBodKoga, [FromForm] DateTime datumPlacanja, [FromForm] decimal ukupnaCena, [FromForm] string tip, [FromForm] string naziv, [FromForm] decimal cenaPoJediniciMere, [FromForm] string jedinicaMere, [FromForm] int kolicina,int id)
+        [HttpPost("izmeniFakturu/{id}/{PIB}")]
+        public IActionResult IzmeniFakturu([FromForm] int PIBkome, [FromForm] int PIBodKoga, [FromForm] DateTime datumPlacanja, [FromForm] decimal ukupnaCena, [FromForm] string tip, [FromForm] string naziv, [FromForm] decimal cenaPoJediniciMere, [FromForm] string jedinicaMere, [FromForm] int kolicina,int id,double PIB)
         {
-            var objekat = fakture.Where(x => x.id == id);
+            var prvaFaktura = fakture.FirstOrDefault(obj=>obj.PIBkome == PIB && obj.id==id);
+            var drugaFaktura = fakture.FirstOrDefault(obj => obj.PIBodKoga == PIB && obj.id == id);
             string tipDrugeFakture = "";
-            if (objekat.Any()==false)
+            if (prvaFaktura == null || drugaFaktura == null)
             {
-                return BadRequest("Ne postoji zeljena faktura");
+                return BadRequest("Neuspela izmena. Proverite PIB-ove");
             }
             if (tip == "ulazna")
             {
@@ -93,8 +94,6 @@ namespace mojePreduzece.Controllers
                 tipDrugeFakture = "ulazna";
             }
 
-            var prvaFaktura = objekat.First();
-            var drugaFaktura = objekat.Last();
             var PIBkomPreduzecu = preduzeca.FirstOrDefault(obj => obj.PIB == PIBkome);
             var PIBodKogPreduzeca= preduzeca.FirstOrDefault(obj => obj.PIB == PIBodKoga);
             if (PIBkomPreduzecu == null || PIBodKogPreduzeca == null || PIBkomPreduzecu == PIBodKogPreduzeca)

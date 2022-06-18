@@ -170,7 +170,7 @@ class RadSaFakturama{
         let prikazFaktura:string=""
         let brojFaktura:number=1;
         fakture.forEach(faktura=>{
-            prikazFaktura+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.piBkome}">
+            prikazFaktura+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.id}">
                 <li id="" name="">PIBkome: ${faktura.piBkome}</li>
                 <li id="" name="">PIBodKoga: ${faktura.piBodKoga}</li>
                 <li id="" name="">DatumGenerisanja fakture : ${faktura.datumGenerisanja}</li>
@@ -181,7 +181,7 @@ class RadSaFakturama{
                 <li id="" name="">Cena po jedinici mere: ${faktura.cenaPoJediniciMere}</li>
                 <li id="" name="">Jedinica mere: ${faktura.jedinicaMere}</li>
                 <li id="" name="">Kolicina: ${faktura.kolicina}</li></ul>
-                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.piBkome})">Izmeni fakturu</h3>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.id},${faktura.piBkome})">Izmeni fakturu</h3>
                 <hr>`
         })
         return prikazFaktura
@@ -192,6 +192,37 @@ class RadSaFakturama{
             console.log(responce)
             div.innerHTML=`<div>${RadSaFakturama.DetaljiFaktura(responce)}</div>`
         })
+    }
+    static DodajFakturu(div:HTMLElement){
+        div.innerHTML=`<form action="${URLovi.unosFakture}" method="post" id="unosFakture">
+        PIB kome: <input type="number" name="PIBkome" id="PIBkome" min="99999999" max="999999999" required><br>
+        PIB od koga: <input type="number" name="PIBodKoga" id="PIBodKoga" min="99999999" max="999999999" required><br>
+        Datum placanja fakture: <input type="date" name="datumPlacanje" id="datumPlacanje" required><br>
+        Ukupna cena: <input type="number" name="ukupnaCena" id="ukupnaCena" required><br>
+        Tip fakture: <select name="tip" id="tip"><option>ulazna</option><option>izlazna</option></select><br>
+        Naziv fakture : <input type="text" name="naziv" id="naziv" required minlength="9" maxlength="30"><br>
+        Cena po jedinici mere: <input type="number" name="cenaPoJediniciMere" id="cenaPoJediniciMere" required><br>
+        Jedinica mere: <select name="jedinicaMere" id="jedinicaMere"><option>RSD</option><option>EUR</option></select><br>
+        Kolicina: <input type="number" name="kolicina" id="kolicina" min="1" required><br>
+        <button type="submit">Dodaj</button>
+        </form>`
+        $('#unosFakture').submit((e)=>{
+            e.preventDefault();
+            $.ajax({
+                url: URLovi.unosFakture,
+                type: 'post',
+                data:$('#unosFakture').serialize(),
+                success:()=>{
+                    alert("Dodata faktura")
+                },
+                error:(err)=>{
+                    alert("Greska kod unosenja fakture. Proverite da li su polja od koga i za koga odgovarajuca")
+                }
+        })
+        })
+    }
+    static Izmenifaktura(div:HTMLElement,id:number,pib:number){
+
     }
 }
 const PrikaziPreduzcaHTML=()=>{
@@ -211,4 +242,10 @@ const PregledajFaktureHTML=(pib)=>{
 }
 const PrikaziFaktureHTML=()=>{
     RadSaFakturama.PrikaziFakture(document.querySelector("#root") as HTMLElement)
+}
+const DodajFakturuHTML=()=>{
+    RadSaFakturama.DodajFakturu(document.querySelector("#root") as HTMLElement)
+}
+const IzmenifakturaHTML=(id,pib)=>{
+    RadSaFakturama.Izmenifaktura(document.querySelector("#root") as HTMLElement, id, pib)
 }
