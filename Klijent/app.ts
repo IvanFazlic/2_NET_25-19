@@ -8,7 +8,8 @@ const URLovi = {
     "pronadjiPreduzece":"http://localhost:5175/API/pronadjiPreduzece/",
     "filter":"http://localhost:5175/API/filter/",
     "dodaj":"http://localhost:5175/API/dodaj",
-    "izmeniPreduzece":"http://localhost:5175/API/izmeniPreduzece/"
+    "izmeniPreduzece":"http://localhost:5175/API/izmeniPreduzece/",
+    "provera":"http://localhost:5175/API/provera/"
 }
 interface Faktura{
     id:number
@@ -58,7 +59,7 @@ class RadSaPreduzecima{
     static PreduzeceZaIzmenu(data:Preduzece,pib){
         let prikazPreduzeca:string=""
         let brojPreduzeca:number=1;
-            prikazPreduzeca+=`<form action="${URLovi.izmeniPreduzece + pib}" method="post" id="${data.pib}">
+            prikazPreduzeca+=`<form action="${URLovi.izmeniPreduzece + pib}" method="post" id="formaIzmeni">
             Ime: <input type="text" name="ime" value="${data.ime}" required minlength="2" maxlength="20"><br>
             Prezime: <input type="text" name="prezime" value="${data.prezime}" required minlength="2" maxlength="20"><br>
             Email: <input type="email" name="email" value="${data.email}" required minlength="10" maxlength="30"><br>
@@ -75,6 +76,24 @@ class RadSaPreduzecima{
         fetch(URLovi.pronadjiPreduzece + pib).then(odg=>odg.json()).then(responce=>{
             console.log(responce)
             div.innerHTML=`<div>${RadSaPreduzecima.PreduzeceZaIzmenu(responce,pib)}</div>`
+            $('#formaIzmeni').submit((e)=>{
+                e.preventDefault();
+                let vrednostPIBa=(<HTMLInputElement>document.getElementById("pib")).value
+                fetch(URLovi.provera + vrednostPIBa).then(resp=> resp.json()).then((data)=>{
+                if(data!=""){
+                    alert("Preduzece vec postoji / PIB se koristi")
+                }else{
+                    $.ajax({
+                    url: URLovi.izmeniPreduzece + pib,
+                    type: 'post',
+                    data:$('#formaIzmeni').serialize(),
+                    success:()=>{
+                        alert("Izmenjeno preduzece")
+                    }
+                  });
+                }
+            }).catch(err=>console.log(err))
+        }) 
         })
     }
     static DodajPreduzece(div:HTMLElement){
@@ -87,7 +106,25 @@ class RadSaPreduzecima{
         Adresa: <input type="text" name="adresa" id="adresa" required minlength="9" maxlength="30"><br>
         PIB: <input type="number" name="PIB" id="PIB" min="99999999" max="999999999" required><br>
         <button name="dugmeDodajPreduzece">Dodaj</button>
-    </form>`
+        </form>`
+        $('#formaDodaj').submit((e)=>{
+            e.preventDefault();
+            let vrednostPIBa=(<HTMLInputElement>document.getElementById("PIB")).value
+            fetch(URLovi.provera + vrednostPIBa).then(resp=> resp.json()).then((data)=>{
+            if(data!=""){
+                alert("Preduzece vec postoji / PIB se koristi")
+            }else{
+                $.ajax({
+                url: URLovi.dodaj,
+                type: 'post',
+                data:$('#formaDodaj').serialize(),
+                success:()=>{
+                    alert("Dodato preduzece")
+                }
+              });
+            }
+        }).catch(err=>console.log(err))
+    })
     }
    
 }

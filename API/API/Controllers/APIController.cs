@@ -185,7 +185,14 @@ namespace mojePreduzece.Controllers
                 return NotFound("Nije pronadjeno preduzece");
             }
             return Ok(nekoPreduzece);
-        }   
+        }
+        //ready
+        [HttpGet("provera/{PIB}")]
+        public IActionResult Provera(double PIB)
+        {
+            var nekoPreduzece = preduzeca.Where((p) => p.PIB == PIB);
+            return Ok(nekoPreduzece);
+        }
         //ready
         [HttpGet("filter/{PIB}/{Naziv}")]
         public IActionResult FilterPreduzece(double PIB,string Naziv)
