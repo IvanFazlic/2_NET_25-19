@@ -126,7 +126,40 @@ class RadSaPreduzecima{
         }).catch(err=>console.log(err))
     })
     }
-   
+    static PretraziPreduzeca(div:HTMLElement){
+        {
+            div.innerHTML=`<form action="${URLovi.filter}" method="post" id="pregragaPoNazivu">
+            PIB: <input type="number" name="PIB" id="PIB" required><br>
+            Naziv preduzeca: <input type="text" name="naziv" id="naziv" required><br>
+            <button name="dugmeDodajPreduzece">Pretrazi</button>
+            </form>`
+            $('#pregragaPoNazivu').submit((e)=>{
+                e.preventDefault();
+                let brojPreduzeca:number=1
+                let vrednostPIBa=(<HTMLInputElement>document.getElementById("PIB")).value
+                let naziv = (<HTMLInputElement>document.getElementById("naziv")).value
+                fetch(URLovi.filter + vrednostPIBa + "/" + naziv).then(resp=> resp.json()).then((preduzece)=>{
+                if(preduzece==""){
+                    alert("Nije pronadjeno preduzece")
+                }
+                if(preduzece.length>=1){
+                    div.innerHTML=""
+                    preduzece.forEach(element => {
+                    div.innerHTML+=`<h2>Preduzece ${brojPreduzeca++}</h2><ul id="${element.pib}">
+                    <li id="" name="">Ime: ${element.ime}</li>
+                    <li id="" name="">Prezime: ${element.prezime}</li>
+                    <li id="" name="">Email: ${element.email}</li>
+                    <li id="" name="">Naziv preduzeca: ${element.naziv}</li>
+                    <li id="" name="">Adresa preduzeca: ${element.adresa}</li>
+                    <li id="" name="">PIB:${element.pib}</li></ul>
+                    <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmeniPreduzeceHTML(${element.pib})">Izmena preduzeca</h3>
+                    <hr>`
+                    });
+                }
+            }).catch(err=>console.log(err))
+        })
+        }
+    }
 }
 const PrikaziPreduzcaHTML=()=>{
     RadSaPreduzecima.PrikaziPreduzeca(document.querySelector("#root") as HTMLElement);
@@ -136,4 +169,7 @@ const IzmeniPreduzeceHTML=(pib)=>{
 }
 const DodajPreduzeceHTML=()=>{
     RadSaPreduzecima.DodajPreduzece(document.querySelector("#root") as HTMLElement)
+}
+const PretraziPreduzecaHTML=()=>{
+    RadSaPreduzecima.PretraziPreduzeca(document.querySelector("#root") as HTMLElement)
 }

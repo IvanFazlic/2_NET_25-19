@@ -200,10 +200,6 @@ namespace mojePreduzece.Controllers
             var filterPIB = preduzeca.Where(enterprise => enterprise.PIB.ToString().Contains(PIB.ToString()));
             var filterNaziv = preduzeca.Where(preduzeca => preduzeca.naziv.Contains(Naziv));  
             var filterPreduzeca=preduzeca.Where(preduzeca=> preduzeca.PIB.ToString().Contains(PIB.ToString()) && preduzeca.naziv.Contains(Naziv));
-            if (filterPIB == null && filterNaziv==null)
-            {
-                return NotFound("Greska");
-            }
             if (filterPIB != null && filterNaziv == null)
             {
                 return Ok(filterPIB);
@@ -211,10 +207,6 @@ namespace mojePreduzece.Controllers
             if(filterPIB == null && filterNaziv != null)
             {
                 return Ok(filterNaziv);
-            }
-            if(filterPreduzeca.Any()==false)
-            {
-                return NotFound("Nije pronadjeno nijedno preduzece");
             }
             return Ok(filterPreduzeca.OrderBy(Preduzece => Preduzece.PIB).ThenBy(Preduzece => Preduzece.naziv));
         }

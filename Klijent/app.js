@@ -83,6 +83,28 @@ var RadSaPreduzecima = /** @class */ (function () {
             })["catch"](function (err) { return console.log(err); });
         });
     };
+    RadSaPreduzecima.PretraziPreduzeca = function (div) {
+        {
+            div.innerHTML = "<form action=\"".concat(URLovi.filter, "\" method=\"post\" id=\"pregragaPoNazivu\">\n            PIB: <input type=\"number\" name=\"PIB\" id=\"PIB\" required><br>\n            Naziv preduzeca: <input type=\"text\" name=\"naziv\" id=\"naziv\" required><br>\n            <button name=\"dugmeDodajPreduzece\">Pretrazi</button>\n            </form>");
+            $('#pregragaPoNazivu').submit(function (e) {
+                e.preventDefault();
+                var brojPreduzeca = 1;
+                var vrednostPIBa = document.getElementById("PIB").value;
+                var naziv = document.getElementById("naziv").value;
+                fetch(URLovi.filter + vrednostPIBa + "/" + naziv).then(function (resp) { return resp.json(); }).then(function (preduzece) {
+                    if (preduzece == "") {
+                        alert("Nije pronadjeno preduzece");
+                    }
+                    if (preduzece.length >= 1) {
+                        div.innerHTML = "";
+                        preduzece.forEach(function (element) {
+                            div.innerHTML += "<h2>Preduzece ".concat(brojPreduzeca++, "</h2><ul id=\"").concat(element.pib, "\">\n                    <li id=\"\" name=\"\">Ime: ").concat(element.ime, "</li>\n                    <li id=\"\" name=\"\">Prezime: ").concat(element.prezime, "</li>\n                    <li id=\"\" name=\"\">Email: ").concat(element.email, "</li>\n                    <li id=\"\" name=\"\">Naziv preduzeca: ").concat(element.naziv, "</li>\n                    <li id=\"\" name=\"\">Adresa preduzeca: ").concat(element.adresa, "</li>\n                    <li id=\"\" name=\"\">PIB:").concat(element.pib, "</li></ul>\n                    <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmeniPreduzeceHTML(").concat(element.pib, ")\">Izmena preduzeca</h3>\n                    <hr>");
+                        });
+                    }
+                })["catch"](function (err) { return console.log(err); });
+            });
+        }
+    };
     return RadSaPreduzecima;
 }());
 var PrikaziPreduzcaHTML = function () {
@@ -93,4 +115,7 @@ var IzmeniPreduzeceHTML = function (pib) {
 };
 var DodajPreduzeceHTML = function () {
     RadSaPreduzecima.DodajPreduzece(document.querySelector("#root"));
+};
+var PretraziPreduzecaHTML = function () {
+    RadSaPreduzecima.PretraziPreduzeca(document.querySelector("#root"));
 };
