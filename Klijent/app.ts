@@ -9,7 +9,8 @@ const URLovi = {
     "filter":"http://localhost:5175/API/filter/",
     "dodaj":"http://localhost:5175/API/dodaj",
     "izmeniPreduzece":"http://localhost:5175/API/izmeniPreduzece/",
-    "provera":"http://localhost:5175/API/provera/"
+    "provera":"http://localhost:5175/API/pronadjiFakturu/",
+    "pronadjiFakturu":"http://localhost:5175/API/pronadjiFakturu/"
 }
 interface Faktura{
     id:number
@@ -221,8 +222,43 @@ class RadSaFakturama{
         })
         })
     }
+    static IzmenaDetaljaFakture(data:Faktura,id:number,pib:number){
+        let prikazFaktura:string=""
+            prikazFaktura+=`<form action="${URLovi.izmeniFakturu + id + "/" + pib}" method="post" id="izmenaFakture">
+            PIB kome: <input type="number" name="PIBkome" id="PIBkome" min="99999999" max="999999999" value="${data.piBkome}" required><br>
+            PIB od koga: <input type="number" name="PIBodKoga" id="PIBodKoga" min="99999999" max="999999999" value="${data.piBodKoga}" required><br>
+            Datum placanja fakture: <input type="date" name="datumPlacanja" id="datumPlacanja" value="${data.datumPlacanja}" required><br>
+            Ukupna cena: <input type="number" name="ukupnaCena" id="ukupnaCena" value="${data.ukupnaCena}" required><br>
+            Tip fakture: <select name="tip" id="tip" value="${data.tipFakture}"><option>ulazna</option><option>izlazna</option></select><br>
+            Naziv fakture : <input type="text" name="naziv" id="naziv" required minlength="9" maxlength="30" value="${data.naziv}"><br>
+            Cena po jedinici mere: <input type="number" name="cenaPoJediniciMere" id="cenaPoJediniciMere" value="${data.cenaPoJediniciMere}" required><br>
+            Jedinica mere: <select name="jedinicaMere" id="jedinicaMere" value="${data.jedinicaMere}"><option>RSD</option><option>EUR</option></select><br>
+            Kolicina: <input type="number" name="kolicina" id="kolicina" min="1" value="${data.kolicina}" required><br>
+            <button type="submit">Dodaj</button>
+            </form>`
+        
+        return prikazFaktura
+    }
     static Izmenifaktura(div:HTMLElement,id:number,pib:number){
-
+        let fakture=[];
+        fetch(URLovi.pronadjiFakturu + id + "/" + pib).then(odg=>odg.json()).then(responce=>{
+            console.log(responce)
+            div.innerHTML=`<div>${RadSaFakturama.IzmenaDetaljaFakture(responce,id,pib)}</div>`
+            $('#izmenaFakture').submit((e)=>{
+                e.preventDefault();
+                $.ajax({
+                url: URLovi.izmeniFakturu + id + "/" + pib,
+                type: 'post',
+                data:$('#izmenaFakture').serialize(),
+                success:()=>{
+                alert("Izmenjena faktura")
+                },
+                error:()=>{
+                alert("Faktura nije izmenjena. Greska.")
+                }
+            })
+        }) 
+        })
     }
 }
 const PrikaziPreduzcaHTML=()=>{

@@ -9,7 +9,8 @@ var URLovi = {
     "filter": "http://localhost:5175/API/filter/",
     "dodaj": "http://localhost:5175/API/dodaj",
     "izmeniPreduzece": "http://localhost:5175/API/izmeniPreduzece/",
-    "provera": "http://localhost:5175/API/provera/"
+    "provera": "http://localhost:5175/API/pronadjiFakturu/",
+    "pronadjiFakturu": "http://localhost:5175/API/pronadjiFakturu/"
 };
 var RadSaPreduzecima = /** @class */ (function () {
     function RadSaPreduzecima() {
@@ -117,7 +118,7 @@ var RadSaFakturama = /** @class */ (function () {
         var prikazFaktura = "";
         var brojFaktura = 1;
         fakture.forEach(function (faktura) {
-            prikazFaktura += "<h2>Faktura ".concat(brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ")\">Izmeni fakturu</h3>\n                <hr>");
+            prikazFaktura += "<h2>Faktura ".concat(brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ",").concat(faktura.piBkome, ")\">Izmeni fakturu</h3>\n                <hr>");
         });
         return prikazFaktura;
     };
@@ -145,6 +146,32 @@ var RadSaFakturama = /** @class */ (function () {
             });
         });
     };
+    RadSaFakturama.IzmenaDetaljaFakture = function (data, id, pib) {
+        var prikazFaktura = "";
+        prikazFaktura += "<form action=\"".concat(URLovi.izmeniFakturu + id + "/" + pib, "\" method=\"post\" id=\"izmenaFakture\">\n            PIB kome: <input type=\"number\" name=\"PIBkome\" id=\"PIBkome\" min=\"99999999\" max=\"999999999\" value=\"").concat(data.piBkome, "\" required><br>\n            PIB od koga: <input type=\"number\" name=\"PIBodKoga\" id=\"PIBodKoga\" min=\"99999999\" max=\"999999999\" value=\"").concat(data.piBodKoga, "\" required><br>\n            Datum placanja fakture: <input type=\"date\" name=\"datumPlacanja\" id=\"datumPlacanja\" value=\"").concat(data.datumPlacanja, "\" required><br>\n            Ukupna cena: <input type=\"number\" name=\"ukupnaCena\" id=\"ukupnaCena\" value=\"").concat(data.ukupnaCena, "\" required><br>\n            Tip fakture: <select name=\"tip\" id=\"tip\" value=\"").concat(data.tipFakture, "\"><option>ulazna</option><option>izlazna</option></select><br>\n            Naziv fakture : <input type=\"text\" name=\"naziv\" id=\"naziv\" required minlength=\"9\" maxlength=\"30\" value=\"").concat(data.naziv, "\"><br>\n            Cena po jedinici mere: <input type=\"number\" name=\"cenaPoJediniciMere\" id=\"cenaPoJediniciMere\" value=\"").concat(data.cenaPoJediniciMere, "\" required><br>\n            Jedinica mere: <select name=\"jedinicaMere\" id=\"jedinicaMere\" value=\"").concat(data.jedinicaMere, "\"><option>RSD</option><option>EUR</option></select><br>\n            Kolicina: <input type=\"number\" name=\"kolicina\" id=\"kolicina\" min=\"1\" value=\"").concat(data.kolicina, "\" required><br>\n            <button type=\"submit\">Dodaj</button>\n            </form>");
+        return prikazFaktura;
+    };
+    RadSaFakturama.Izmenifaktura = function (div, id, pib) {
+        var fakture = [];
+        fetch(URLovi.pronadjiFakturu + id + "/" + pib).then(function (odg) { return odg.json(); }).then(function (responce) {
+            console.log(responce);
+            div.innerHTML = "<div>".concat(RadSaFakturama.IzmenaDetaljaFakture(responce, id, pib), "</div>");
+            $('#izmenaFakture').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: URLovi.izmeniFakturu + id + "/" + pib,
+                    type: 'post',
+                    data: $('#izmenaFakture').serialize(),
+                    success: function () {
+                        alert("Izmenjena faktura");
+                    },
+                    error: function () {
+                        alert("Faktura nije izmenjena. Greska.");
+                    }
+                });
+            });
+        });
+    };
     return RadSaFakturama;
 }());
 var PrikaziPreduzcaHTML = function () {
@@ -167,4 +194,7 @@ var PrikaziFaktureHTML = function () {
 };
 var DodajFakturuHTML = function () {
     RadSaFakturama.DodajFakturu(document.querySelector("#root"));
+};
+var IzmenifakturaHTML = function (id, pib) {
+    RadSaFakturama.Izmenifaktura(document.querySelector("#root"), id, pib);
 };

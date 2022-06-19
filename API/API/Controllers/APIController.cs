@@ -153,6 +153,17 @@ namespace mojePreduzece.Controllers
             return Ok(fakturePoPreduzecu);
         }
         //ready
+        [HttpGet("pronadjiFakturu/{id}/{PIB}")]
+        public IActionResult PronadjiFakturu(int id,int PIB)
+        {
+            var fakturePoPreduzecu = fakture.FirstOrDefault(obj => obj.PIBkome == PIB && obj.id==id);
+            if (fakturePoPreduzecu==null)
+            {
+                return BadRequest("Ne postoji faktura");
+            }
+            return Ok(fakturePoPreduzecu);
+        }
+        //ready
         [HttpGet("vratiSvaPreduzeca")]
         public IActionResult SvaPreduzeca()
         {
