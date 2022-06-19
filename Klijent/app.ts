@@ -186,7 +186,7 @@ class RadSaFakturama{
             console.log(data)
             div.innerHTML=""
             data.forEach(faktura=>{
-                div.innerHTML+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.id}">
+                div.innerHTML+=`<h2>Faktura ${(page*3)+brojFaktura++}</h2><ul id="${faktura.id}">
                 <li id="" name="">PIBkome: ${faktura.piBkome}</li>
                 <li id="" name="">PIBodKoga: ${faktura.piBodKoga}</li>
                 <li id="" name="">DatumGenerisanja fakture : ${faktura.datumGenerisanja}</li>
@@ -200,10 +200,12 @@ class RadSaFakturama{
                 <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.id},${faktura.piBkome})">Izmeni fakturu</h3>
                 <hr>`
             })
-            if(page<0){
+            if(page<=0){
                 page=1
-            }
+                div.innerHTML+=`<button onclick=PregledajFaktureHTML(${pib},${page-1})>Prethodna</button><button onclick=PregledajFaktureHTML(${pib},${page})>Sledeca</button>`
+            }else{
             div.innerHTML+=`<button onclick=PregledajFaktureHTML(${pib},${page-1})>Prethodna</button><button onclick=PregledajFaktureHTML(${pib},${page+1})>Sledeca</button>`
+        }
             }).catch(err=>{
                 alert("Nema vise faktura / nema faktura")
             })

@@ -124,12 +124,15 @@ var RadSaFakturama = /** @class */ (function () {
             console.log(data);
             div.innerHTML = "";
             data.forEach(function (faktura) {
-                div.innerHTML += "<h2>Faktura ".concat(brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ",").concat(faktura.piBkome, ")\">Izmeni fakturu</h3>\n                <hr>");
+                div.innerHTML += "<h2>Faktura ".concat((page * 3) + brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ",").concat(faktura.piBkome, ")\">Izmeni fakturu</h3>\n                <hr>");
             });
-            if (page < 0) {
+            if (page <= 0) {
                 page = 1;
+                div.innerHTML += "<button onclick=PregledajFaktureHTML(".concat(pib, ",").concat(page - 1, ")>Prethodna</button><button onclick=PregledajFaktureHTML(").concat(pib, ",").concat(page, ")>Sledeca</button>");
             }
-            div.innerHTML += "<button onclick=PregledajFaktureHTML(".concat(pib, ",").concat(page - 1, ")>Prethodna</button><button onclick=PregledajFaktureHTML(").concat(pib, ",").concat(page + 1, ")>Sledeca</button>");
+            else {
+                div.innerHTML += "<button onclick=PregledajFaktureHTML(".concat(pib, ",").concat(page - 1, ")>Prethodna</button><button onclick=PregledajFaktureHTML(").concat(pib, ",").concat(page + 1, ")>Sledeca</button>");
+            }
         })["catch"](function (err) {
             alert("Nema vise faktura / nema faktura");
         });
