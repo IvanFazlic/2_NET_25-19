@@ -165,9 +165,14 @@ class RadSaPreduzecima{
 }
 class RadSaFakturama{
     static PregledajFakture(div:HTMLElement,pib:number){
-        alert(pib)
+        let fakture=[]
+        fetch(URLovi.pregledFakturaPoPreduzecu + pib).then(r=>r.json()).then(responce=>{
+            console.log(responce)
+            div.innerHTML=`<div>${RadSaFakturama.DetaljiFaktura(responce)}</div>`
+        }).catch(err=>alert("Ne postoje fakture za ovo preduzece"))
     }
     static DetaljiFaktura(fakture:Array<Faktura>){
+        console.log(fakture)
         let prikazFaktura:string=""
         let brojFaktura:number=1;
         fakture.forEach(faktura=>{

@@ -112,9 +112,14 @@ var RadSaFakturama = /** @class */ (function () {
     function RadSaFakturama() {
     }
     RadSaFakturama.PregledajFakture = function (div, pib) {
-        alert(pib);
+        var fakture = [];
+        fetch(URLovi.pregledFakturaPoPreduzecu + pib).then(function (r) { return r.json(); }).then(function (responce) {
+            console.log(responce);
+            div.innerHTML = "<div>".concat(RadSaFakturama.DetaljiFaktura(responce), "</div>");
+        })["catch"](function (err) { return alert("Ne postoje fakture za ovo preduzece"); });
     };
     RadSaFakturama.DetaljiFaktura = function (fakture) {
+        console.log(fakture);
         var prikazFaktura = "";
         var brojFaktura = 1;
         fakture.forEach(function (faktura) {
