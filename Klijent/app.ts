@@ -9,7 +9,7 @@ const URLovi = {
     "filter":"http://localhost:5175/API/filter/",
     "dodaj":"http://localhost:5175/API/dodaj",
     "izmeniPreduzece":"http://localhost:5175/API/izmeniPreduzece/",
-    "provera":"http://localhost:5175/API/pronadjiFakturu/",
+    "provera":"http://localhost:5175/API/provera/",
     "pronadjiFakturu":"http://localhost:5175/API/pronadjiFakturu/",
     "PretragaPoNazivuStavkeFakture":"http://localhost:5175/API/PretragaPoNazivuStavkeFakture"
 }
@@ -323,7 +323,7 @@ class RadSaFakturama{
             alert("Bilans za ovaj period je: " + resp)
             },
             error:()=>{
-            alert("Ne moze da se izracuna bilans")
+            alert("Ne moze da se izracuna bilans. Bilans je 0")
             }
         })
     }) 
@@ -331,7 +331,7 @@ class RadSaFakturama{
     static PretragaPoNazivuStavke(div:HTMLElement){
         div.innerHTML=`<form action="${URLovi.PretragaPoNazivuStavkeFakture}" method="post" id="stavka">
         Neka stavka: <input type="string" name="stavka" id="stavka" required><br>
-        <button name="dugmeDodajPreduzece">Izracunaj</button>
+        <button name="dugmeDodajPreduzece">Pretrazi</button>
         </form>`
         $('#stavka').submit((e)=>{
             e.preventDefault();

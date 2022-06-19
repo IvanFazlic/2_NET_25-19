@@ -9,7 +9,7 @@ var URLovi = {
     "filter": "http://localhost:5175/API/filter/",
     "dodaj": "http://localhost:5175/API/dodaj",
     "izmeniPreduzece": "http://localhost:5175/API/izmeniPreduzece/",
-    "provera": "http://localhost:5175/API/pronadjiFakturu/",
+    "provera": "http://localhost:5175/API/provera/",
     "pronadjiFakturu": "http://localhost:5175/API/pronadjiFakturu/",
     "PretragaPoNazivuStavkeFakture": "http://localhost:5175/API/PretragaPoNazivuStavkeFakture"
 };
@@ -210,13 +210,13 @@ var RadSaFakturama = /** @class */ (function () {
                     alert("Bilans za ovaj period je: " + resp);
                 },
                 error: function () {
-                    alert("Ne moze da se izracuna bilans");
+                    alert("Ne moze da se izracuna bilans. Bilans je 0");
                 }
             });
         });
     };
     RadSaFakturama.PretragaPoNazivuStavke = function (div) {
-        div.innerHTML = "<form action=\"".concat(URLovi.PretragaPoNazivuStavkeFakture, "\" method=\"post\" id=\"stavka\">\n        Neka stavka: <input type=\"string\" name=\"stavka\" id=\"stavka\" required><br>\n        <button name=\"dugmeDodajPreduzece\">Izracunaj</button>\n        </form>");
+        div.innerHTML = "<form action=\"".concat(URLovi.PretragaPoNazivuStavkeFakture, "\" method=\"post\" id=\"stavka\">\n        Neka stavka: <input type=\"string\" name=\"stavka\" id=\"stavka\" required><br>\n        <button name=\"dugmeDodajPreduzece\">Pretrazi</button>\n        </form>");
         $('#stavka').submit(function (e) {
             e.preventDefault();
             var brojFaktura = 1;

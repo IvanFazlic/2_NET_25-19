@@ -258,7 +258,7 @@ namespace mojePreduzece.Controllers
         }
         //ready
         [HttpPost("izmeniPreduzece/{PARAMETAR}")]
-        public IActionResult izmeniPreduzece([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] double PIB, double PARAMETAR)
+        public IActionResult izmeniPreduzece([FromForm] string ime, [FromForm] string prezime, [FromForm] string email, [FromForm] string naziv, [FromForm] string adresa, [FromForm] int PIB, double PARAMETAR)
         {
             var obj = preduzeca.FirstOrDefault(x => x.PIB == PARAMETAR);
             if (obj == null)
@@ -269,6 +269,10 @@ namespace mojePreduzece.Controllers
             {
                 return BadRequest("Vec postoji preduzece sa tim PIB-om");
             }
+            var faktureKome = fakture.Where(obj => obj.PIBkome == PARAMETAR);
+            var faktureOdKoga = fakture.Where(obj => obj.PIBodKoga == PARAMETAR);
+            faktureKome.Select(c => { c.PIBkome = PIB; return c; }).ToList();
+            faktureOdKoga.Select(c => { c.PIBodKoga = PIB; return c; }).ToList();
             obj.ime = ime;
             obj.prezime = prezime;
             obj.email = email;
