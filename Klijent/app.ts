@@ -10,7 +10,8 @@ const URLovi = {
     "dodaj":"http://localhost:5175/API/dodaj",
     "izmeniPreduzece":"http://localhost:5175/API/izmeniPreduzece/",
     "provera":"http://localhost:5175/API/pronadjiFakturu/",
-    "pronadjiFakturu":"http://localhost:5175/API/pronadjiFakturu/"
+    "pronadjiFakturu":"http://localhost:5175/API/pronadjiFakturu/",
+    "PretragaPoNazivuStavkeFakture":"http://localhost:5175/API/PretragaPoNazivuStavkeFakture"
 }
 const podesavanja= {
     "async": true,
@@ -209,19 +210,6 @@ class RadSaFakturama{
             }).catch(err=>{
                 alert("Nema vise faktura / nema faktura")
             })
-            
-            
-            // document.querySelector("#prosla")!.addEventListener("click",()=>{
-            //     let page=parseInt(document.querySelector("#prosla")!.getAttribute("data-page")!);  
-            //     if(page<0){
-            //         page=0;
-            //     }
-            //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
-            //   })
-            //   document.querySelector("#sledeca")!.addEventListener("click",()=>{
-            //     let page=parseInt(document.querySelector("#sledeca")!.getAttribute("data-page")!);
-            //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
-            // })
     }
     static DetaljiFaktura(fakture:Array<Faktura>){
         console.log(fakture)
@@ -340,6 +328,42 @@ class RadSaFakturama{
         })
     }) 
     }
+    static PretragaPoNazivuStavke(div:HTMLElement){
+        div.innerHTML=`<form action="${URLovi.PretragaPoNazivuStavkeFakture}" method="post" id="stavka">
+        Neka stavka: <input type="string" name="stavka" id="stavka" required><br>
+        <button name="dugmeDodajPreduzece">Izracunaj</button>
+        </form>`
+        $('#stavka').submit((e)=>{
+            e.preventDefault();
+            let brojFaktura=1
+            $.ajax({
+            url: URLovi.PretragaPoNazivuStavkeFakture,
+            type: 'post',
+            data:$('#stavka').serialize(),
+            success:(resp)=>{
+            div.innerHTML=""
+            resp.forEach(faktura=>{
+                div.innerHTML+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.id}">
+                <li id="" name="">PIBkome: ${faktura.piBkome}</li>
+                <li id="" name="">PIBodKoga: ${faktura.piBodKoga}</li>
+                <li id="" name="">DatumGenerisanja fakture : ${faktura.datumGenerisanja}</li>
+                <li id="" name="">DatumPlacanja fakture: ${faktura.datumPlacanja}</li>
+                <li id="" name="">Ukupna cena: ${faktura.ukupnaCena}</li>
+                <li id="" name="">Tip fakture: ${faktura.tipFakture}</li>
+                <li id="" name="">Naziv fakture : ${faktura.naziv}</li>
+                <li id="" name="">Cena po jedinici mere: ${faktura.cenaPoJediniciMere}</li>
+                <li id="" name="">Jedinica mere: ${faktura.jedinicaMere}</li>
+                <li id="" name="">Kolicina: ${faktura.kolicina}</li></ul>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.id},${faktura.piBkome})">Izmeni fakturu</h3>
+                <hr>`
+            })
+            },
+            error:()=>{
+            alert("Nepostoji nijedna faktura sa ovom stavkom")
+            }
+        })
+    })
+    }
     
 }
 const PrikaziPreduzcaHTML=()=>{
@@ -368,4 +392,7 @@ const IzmenifakturaHTML=(id,pib)=>{
 }
 const BilansHTML=()=>{
     RadSaFakturama.Bilans(document.querySelector("#root") as HTMLElement)
+}
+const PretragaPoNazivuStavkeHTML=()=>{
+    RadSaFakturama.PretragaPoNazivuStavke(document.querySelector("#root") as HTMLElement)
 }

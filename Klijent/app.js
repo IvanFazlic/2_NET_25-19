@@ -10,7 +10,8 @@ var URLovi = {
     "dodaj": "http://localhost:5175/API/dodaj",
     "izmeniPreduzece": "http://localhost:5175/API/izmeniPreduzece/",
     "provera": "http://localhost:5175/API/pronadjiFakturu/",
-    "pronadjiFakturu": "http://localhost:5175/API/pronadjiFakturu/"
+    "pronadjiFakturu": "http://localhost:5175/API/pronadjiFakturu/",
+    "PretragaPoNazivuStavkeFakture": "http://localhost:5175/API/PretragaPoNazivuStavkeFakture"
 };
 var podesavanja = {
     "async": true,
@@ -136,17 +137,6 @@ var RadSaFakturama = /** @class */ (function () {
         })["catch"](function (err) {
             alert("Nema vise faktura / nema faktura");
         });
-        // document.querySelector("#prosla")!.addEventListener("click",()=>{
-        //     let page=parseInt(document.querySelector("#prosla")!.getAttribute("data-page")!);  
-        //     if(page<0){
-        //         page=0;
-        //     }
-        //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
-        //   })
-        //   document.querySelector("#sledeca")!.addEventListener("click",()=>{
-        //     let page=parseInt(document.querySelector("#sledeca")!.getAttribute("data-page")!);
-        //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
-        // })
     };
     RadSaFakturama.DetaljiFaktura = function (fakture) {
         console.log(fakture);
@@ -225,6 +215,27 @@ var RadSaFakturama = /** @class */ (function () {
             });
         });
     };
+    RadSaFakturama.PretragaPoNazivuStavke = function (div) {
+        div.innerHTML = "<form action=\"".concat(URLovi.PretragaPoNazivuStavkeFakture, "\" method=\"post\" id=\"stavka\">\n        Neka stavka: <input type=\"string\" name=\"stavka\" id=\"stavka\" required><br>\n        <button name=\"dugmeDodajPreduzece\">Izracunaj</button>\n        </form>");
+        $('#stavka').submit(function (e) {
+            e.preventDefault();
+            var brojFaktura = 1;
+            $.ajax({
+                url: URLovi.PretragaPoNazivuStavkeFakture,
+                type: 'post',
+                data: $('#stavka').serialize(),
+                success: function (resp) {
+                    div.innerHTML = "";
+                    resp.forEach(function (faktura) {
+                        div.innerHTML += "<h2>Faktura ".concat(brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ",").concat(faktura.piBkome, ")\">Izmeni fakturu</h3>\n                <hr>");
+                    });
+                },
+                error: function () {
+                    alert("Nepostoji nijedna faktura sa ovom stavkom");
+                }
+            });
+        });
+    };
     return RadSaFakturama;
 }());
 var PrikaziPreduzcaHTML = function () {
@@ -253,4 +264,7 @@ var IzmenifakturaHTML = function (id, pib) {
 };
 var BilansHTML = function () {
     RadSaFakturama.Bilans(document.querySelector("#root"));
+};
+var PretragaPoNazivuStavkeHTML = function () {
+    RadSaFakturama.PretragaPoNazivuStavke(document.querySelector("#root"));
 };

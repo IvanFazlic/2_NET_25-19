@@ -186,6 +186,17 @@ namespace mojePreduzece.Controllers
             return Ok(sveFakture);
         }
         //ready
+        [HttpPost("PretragaPoNazivuStavkeFakture")]
+        public IActionResult PretragaPoNazivuStavkeFakture([FromForm] string stavka)
+        {
+            var sveFakture = fakture.Where(obj=>obj.naziv ==stavka || obj.jedinicaMere == stavka || obj.cenaPoJediniciMere == Convert.ToDecimal(stavka) || obj.kolicina == Convert.ToDecimal(stavka) || obj.ukupnaCena == Convert.ToDecimal(stavka));
+            if (sveFakture.Any() == false)
+            {
+                return BadRequest("Nema nijedna faktura");
+            }
+            return Ok(sveFakture);
+        }
+        //ready
         [HttpGet("pronadjiPreduzece/{PIB}")]
         public IActionResult JednoPreduzece(double PIB)
         {
