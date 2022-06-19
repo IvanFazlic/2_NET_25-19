@@ -135,7 +135,7 @@ var RadSaFakturama = /** @class */ (function () {
         });
     };
     RadSaFakturama.DodajFakturu = function (div) {
-        div.innerHTML = "<form action=\"".concat(URLovi.unosFakture, "\" method=\"post\" id=\"unosFakture\">\n        PIB kome: <input type=\"number\" name=\"PIBkome\" id=\"PIBkome\" min=\"99999999\" max=\"999999999\" required><br>\n        PIB od koga: <input type=\"number\" name=\"PIBodKoga\" id=\"PIBodKoga\" min=\"99999999\" max=\"999999999\" required><br>\n        Datum placanja fakture: <input type=\"date\" name=\"datumPlacanje\" id=\"datumPlacanje\" required><br>\n        Ukupna cena: <input type=\"number\" name=\"ukupnaCena\" id=\"ukupnaCena\" required><br>\n        Tip fakture: <select name=\"tip\" id=\"tip\"><option>ulazna</option><option>izlazna</option></select><br>\n        Naziv fakture : <input type=\"text\" name=\"naziv\" id=\"naziv\" required minlength=\"9\" maxlength=\"30\"><br>\n        Cena po jedinici mere: <input type=\"number\" name=\"cenaPoJediniciMere\" id=\"cenaPoJediniciMere\" required><br>\n        Jedinica mere: <select name=\"jedinicaMere\" id=\"jedinicaMere\"><option>RSD</option><option>EUR</option></select><br>\n        Kolicina: <input type=\"number\" name=\"kolicina\" id=\"kolicina\" min=\"1\" required><br>\n        <button type=\"submit\">Dodaj</button>\n        </form>");
+        div.innerHTML = "<form action=\"".concat(URLovi.unosFakture, "\" method=\"post\" id=\"unosFakture\">\n        PIB kome: <input type=\"number\" name=\"PIBkome\" id=\"PIBkome\" min=\"99999999\" max=\"999999999\" required><br>\n        PIB od koga: <input type=\"number\" name=\"PIBodKoga\" id=\"PIBodKoga\" min=\"99999999\" max=\"999999999\" required><br>\n        Datum placanja fakture: <input type=\"date\" name=\"datumPlacanja\" id=\"datumPlacanja\" required><br>\n        Ukupna cena: <input type=\"number\" name=\"ukupnaCena\" id=\"ukupnaCena\" required><br>\n        Tip fakture: <select name=\"tip\" id=\"tip\"><option>ulazna</option><option>izlazna</option></select><br>\n        Naziv fakture : <input type=\"text\" name=\"naziv\" id=\"naziv\" required minlength=\"9\" maxlength=\"30\"><br>\n        Cena po jedinici mere: <input type=\"number\" name=\"cenaPoJediniciMere\" id=\"cenaPoJediniciMere\" required><br>\n        Jedinica mere: <select name=\"jedinicaMere\" id=\"jedinicaMere\"><option>RSD</option><option>EUR</option></select><br>\n        Kolicina: <input type=\"number\" name=\"kolicina\" id=\"kolicina\" min=\"1\" required><br>\n        <button type=\"submit\">Dodaj</button>\n        </form>");
         $('#unosFakture').submit(function (e) {
             e.preventDefault();
             $.ajax({
@@ -177,6 +177,24 @@ var RadSaFakturama = /** @class */ (function () {
             });
         });
     };
+    RadSaFakturama.Bilans = function (div) {
+        div.innerHTML = "<form action=\"".concat(URLovi.bilans, "\" method=\"post\" id=\"bilans\">\n        PIB: <input type=\"number\" name=\"PIB\" id=\"PIB\" min=\"99999999\" max=\"999999999\" required><br>\n        Pocetni datum: <input type=\"date\" name=\"pocetak\" id=\"pocetak\" required><br>\n        Krajnji datum: <input type=\"date\" name=\"kraj\" id=\"kraj\" required><br>\n        <button name=\"dugmeDodajPreduzece\">Izracunaj</button>\n        </form>");
+        $('#bilans').submit(function (e) {
+            var pib = document.getElementById("PIB").value;
+            e.preventDefault();
+            $.ajax({
+                url: URLovi.bilans + pib,
+                type: 'post',
+                data: $('#bilans').serialize(),
+                success: function (resp) {
+                    alert("Bilans za ovaj period je: " + resp);
+                },
+                error: function () {
+                    alert("Ne moze da se izracuna bilans");
+                }
+            });
+        });
+    };
     return RadSaFakturama;
 }());
 var PrikaziPreduzcaHTML = function () {
@@ -202,4 +220,7 @@ var DodajFakturuHTML = function () {
 };
 var IzmenifakturaHTML = function (id, pib) {
     RadSaFakturama.Izmenifaktura(document.querySelector("#root"), id, pib);
+};
+var BilansHTML = function () {
+    RadSaFakturama.Bilans(document.querySelector("#root"));
 };

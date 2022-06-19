@@ -203,7 +203,7 @@ class RadSaFakturama{
         div.innerHTML=`<form action="${URLovi.unosFakture}" method="post" id="unosFakture">
         PIB kome: <input type="number" name="PIBkome" id="PIBkome" min="99999999" max="999999999" required><br>
         PIB od koga: <input type="number" name="PIBodKoga" id="PIBodKoga" min="99999999" max="999999999" required><br>
-        Datum placanja fakture: <input type="date" name="datumPlacanje" id="datumPlacanje" required><br>
+        Datum placanja fakture: <input type="date" name="datumPlacanja" id="datumPlacanja" required><br>
         Ukupna cena: <input type="number" name="ukupnaCena" id="ukupnaCena" required><br>
         Tip fakture: <select name="tip" id="tip"><option>ulazna</option><option>izlazna</option></select><br>
         Naziv fakture : <input type="text" name="naziv" id="naziv" required minlength="9" maxlength="30"><br>
@@ -265,6 +265,30 @@ class RadSaFakturama{
         }) 
         })
     }
+    static Bilans(div:HTMLElement){ 
+        div.innerHTML=`<form action="${URLovi.bilans}" method="post" id="bilans">
+        PIB: <input type="number" name="PIB" id="PIB" min="99999999" max="999999999" required><br>
+        Pocetni datum: <input type="date" name="pocetak" id="pocetak" required><br>
+        Krajnji datum: <input type="date" name="kraj" id="kraj" required><br>
+        <button name="dugmeDodajPreduzece">Izracunaj</button>
+        </form>`
+        $('#bilans').submit((e)=>{
+            let pib:string=(<HTMLInputElement>document.getElementById("PIB")).value
+            e.preventDefault();
+            $.ajax({
+            url: URLovi.bilans + pib,
+            type: 'post',
+            data:$('#bilans').serialize(),
+            success:(resp)=>{
+            alert("Bilans za ovaj period je: " + resp)
+            },
+            error:()=>{
+            alert("Ne moze da se izracuna bilans")
+            }
+        })
+    }) 
+    }
+    
 }
 const PrikaziPreduzcaHTML=()=>{
     RadSaPreduzecima.PrikaziPreduzeca(document.querySelector("#root") as HTMLElement);
@@ -289,4 +313,7 @@ const DodajFakturuHTML=()=>{
 }
 const IzmenifakturaHTML=(id,pib)=>{
     RadSaFakturama.Izmenifaktura(document.querySelector("#root") as HTMLElement, id, pib)
+}
+const BilansHTML=()=>{
+    RadSaFakturama.Bilans(document.querySelector("#root") as HTMLElement)
 }
