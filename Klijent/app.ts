@@ -12,6 +12,12 @@ const URLovi = {
     "provera":"http://localhost:5175/API/pronadjiFakturu/",
     "pronadjiFakturu":"http://localhost:5175/API/pronadjiFakturu/"
 }
+const podesavanja= {
+    "async": true,
+	"crossDomain": true,
+	"url": "http://localhost:5175/API/pregledFakturaPoPreduzecu/",
+	"method": "GET",
+}
 interface Faktura{
     id:number
     piBkome:number 
@@ -33,6 +39,15 @@ interface Preduzece{
     adresa:string
     pib:number
 }
+interface FaktureResponse{
+    forEach(arg0: (faktura: any) => void)
+    data:Array<Faktura>;
+    meta:{
+        total_pages:number;
+        current_page:number;
+        next_page:number;
+    }
+}
 class RadSaPreduzecima{
     static DetaljiPreduzeca(preduzeca:Array<Preduzece>){
         let prikazPreduzeca:string=""
@@ -46,7 +61,7 @@ class RadSaPreduzecima{
                 <li id="" name="">Adresa preduzeca: ${preduzece.adresa}</li>
                 <li id="" name="">PIB:${preduzece.pib}</li></ul>
                 <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmeniPreduzeceHTML(${preduzece.pib})">Izmena preduzeca</h3>
-                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${preduzece.pib})">Pregled faktura</h3>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${preduzece.pib},0)">Pregled faktura</h3>
                 <hr>`
         })
         return prikazPreduzeca
@@ -155,7 +170,7 @@ class RadSaPreduzecima{
                     <li id="" name="">Adresa preduzeca: ${element.adresa}</li>
                     <li id="" name="">PIB:${element.pib}</li></ul>
                     <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmeniPreduzeceHTML(${element.pib})">Izmena preduzeca</h3>
-                    <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${element.pib})">Pregled faktura</h3>
+                    <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="PregledajFaktureHTML(${element.pib},0)">Pregled faktura</h3>
                     <hr>`
                     });
                 }
@@ -164,12 +179,47 @@ class RadSaPreduzecima{
     }}
 }
 class RadSaFakturama{
-    static PregledajFakture(div:HTMLElement,pib:number){
+    static PregledajFakture(div:HTMLElement,pib:number, page:number){
         let fakture=[]
-        fetch(URLovi.pregledFakturaPoPreduzecu + pib).then(r=>r.json()).then(responce=>{
-            console.log(responce)
-            div.innerHTML=`<div>${RadSaFakturama.DetaljiFaktura(responce)}</div>`
-        }).catch(err=>alert("Ne postoje fakture za ovo preduzece"))
+        let brojFaktura:number=1
+            fetch(URLovi.pregledFakturaPoPreduzecu + pib + "/" + page).then(r=>r.json()).then(data=>{
+            console.log(data)
+            div.innerHTML=""
+            data.forEach(faktura=>{
+                div.innerHTML+=`<h2>Faktura ${brojFaktura++}</h2><ul id="${faktura.id}">
+                <li id="" name="">PIBkome: ${faktura.piBkome}</li>
+                <li id="" name="">PIBodKoga: ${faktura.piBodKoga}</li>
+                <li id="" name="">DatumGenerisanja fakture : ${faktura.datumGenerisanja}</li>
+                <li id="" name="">DatumPlacanja fakture: ${faktura.datumPlacanja}</li>
+                <li id="" name="">Ukupna cena: ${faktura.ukupnaCena}</li>
+                <li id="" name="">Tip fakture: ${faktura.tipFakture}</li>
+                <li id="" name="">Naziv fakture : ${faktura.naziv}</li>
+                <li id="" name="">Cena po jedinici mere: ${faktura.cenaPoJediniciMere}</li>
+                <li id="" name="">Jedinica mere: ${faktura.jedinicaMere}</li>
+                <li id="" name="">Kolicina: ${faktura.kolicina}</li></ul>
+                <h3 style="color:rgb(35, 211, 235);cursor: pointer;" onclick="IzmenifakturaHTML(${faktura.id},${faktura.piBkome})">Izmeni fakturu</h3>
+                <hr>`
+            })
+            if(page<0){
+                page=1
+            }
+            div.innerHTML+=`<button onclick=PregledajFaktureHTML(${pib},${page-1})>Prethodna</button><button onclick=PregledajFaktureHTML(${pib},${page+1})>Sledeca</button>`
+            }).catch(err=>{
+                alert("Nema vise faktura / nema faktura")
+            })
+            
+            
+            // document.querySelector("#prosla")!.addEventListener("click",()=>{
+            //     let page=parseInt(document.querySelector("#prosla")!.getAttribute("data-page")!);  
+            //     if(page<0){
+            //         page=0;
+            //     }
+            //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
+            //   })
+            //   document.querySelector("#sledeca")!.addEventListener("click",()=>{
+            //     let page=parseInt(document.querySelector("#sledeca")!.getAttribute("data-page")!);
+            //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
+            // })
     }
     static DetaljiFaktura(fakture:Array<Faktura>){
         console.log(fakture)
@@ -302,8 +352,8 @@ const DodajPreduzeceHTML=()=>{
 const PretraziPreduzecaHTML=()=>{
     RadSaPreduzecima.PretraziPreduzeca(document.querySelector("#root") as HTMLElement)
 }
-const PregledajFaktureHTML=(pib)=>{
-    RadSaFakturama.PregledajFakture(document.querySelector("#root") as HTMLElement,pib)
+const PregledajFaktureHTML=(pib,page)=>{
+    RadSaFakturama.PregledajFakture(document.querySelector("#root") as HTMLElement,pib,page)
 }
 const PrikaziFaktureHTML=()=>{
     RadSaFakturama.PrikaziFakture(document.querySelector("#root") as HTMLElement)

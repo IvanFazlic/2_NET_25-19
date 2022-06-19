@@ -142,13 +142,13 @@ namespace mojePreduzece.Controllers
             
         }
         //ready
-        [HttpGet("pregledFakturaPoPreduzecu/{PIB}")]
-        public IActionResult FakturePoPreduzecu(int PIB)
+        [HttpGet("pregledFakturaPoPreduzecu/{PIB}/{page}")]
+        public IActionResult FakturePoPreduzecu(int PIB,int page)
         {
-            var fakturePoPreduzecu = fakture.Where(obj => obj.PIBkome == PIB);
+            var fakturePoPreduzecu = fakture.Where(obj => obj.PIBkome == PIB).Skip(page*3).Take(3);
             if (fakturePoPreduzecu.Any() == false)
             {
-                return BadRequest("Ne postoji faktura");
+                return BadRequest("Ne postoji faktura / nema dalje");
             }
             return Ok(fakturePoPreduzecu);
         }

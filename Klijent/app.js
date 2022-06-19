@@ -12,6 +12,12 @@ var URLovi = {
     "provera": "http://localhost:5175/API/pronadjiFakturu/",
     "pronadjiFakturu": "http://localhost:5175/API/pronadjiFakturu/"
 };
+var podesavanja = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost:5175/API/pregledFakturaPoPreduzecu/",
+    "method": "GET"
+};
 var RadSaPreduzecima = /** @class */ (function () {
     function RadSaPreduzecima() {
     }
@@ -19,7 +25,7 @@ var RadSaPreduzecima = /** @class */ (function () {
         var prikazPreduzeca = "";
         var brojPreduzeca = 1;
         preduzeca.forEach(function (preduzece) {
-            prikazPreduzeca += "<h2>Preduzece ".concat(brojPreduzeca++, "</h2><ul id=\"").concat(preduzece.pib, "\">\n                <li id=\"\" name=\"\">Ime: ").concat(preduzece.ime, "</li>\n                <li id=\"\" name=\"\">Prezime: ").concat(preduzece.prezime, "</li>\n                <li id=\"\" name=\"\">Email: ").concat(preduzece.email, "</li>\n                <li id=\"\" name=\"\">Naziv preduzeca: ").concat(preduzece.naziv, "</li>\n                <li id=\"\" name=\"\">Adresa preduzeca: ").concat(preduzece.adresa, "</li>\n                <li id=\"\" name=\"\">PIB:").concat(preduzece.pib, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmeniPreduzeceHTML(").concat(preduzece.pib, ")\">Izmena preduzeca</h3>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"PregledajFaktureHTML(").concat(preduzece.pib, ")\">Pregled faktura</h3>\n                <hr>");
+            prikazPreduzeca += "<h2>Preduzece ".concat(brojPreduzeca++, "</h2><ul id=\"").concat(preduzece.pib, "\">\n                <li id=\"\" name=\"\">Ime: ").concat(preduzece.ime, "</li>\n                <li id=\"\" name=\"\">Prezime: ").concat(preduzece.prezime, "</li>\n                <li id=\"\" name=\"\">Email: ").concat(preduzece.email, "</li>\n                <li id=\"\" name=\"\">Naziv preduzeca: ").concat(preduzece.naziv, "</li>\n                <li id=\"\" name=\"\">Adresa preduzeca: ").concat(preduzece.adresa, "</li>\n                <li id=\"\" name=\"\">PIB:").concat(preduzece.pib, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmeniPreduzeceHTML(").concat(preduzece.pib, ")\">Izmena preduzeca</h3>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"PregledajFaktureHTML(").concat(preduzece.pib, ",0)\">Pregled faktura</h3>\n                <hr>");
         });
         return prikazPreduzeca;
     };
@@ -99,7 +105,7 @@ var RadSaPreduzecima = /** @class */ (function () {
                     if (preduzece.length >= 1) {
                         div.innerHTML = "";
                         preduzece.forEach(function (element) {
-                            div.innerHTML += "<h2>Preduzece ".concat(brojPreduzeca++, "</h2><ul id=\"").concat(element.pib, "\">\n                    <li id=\"\" name=\"\">Ime: ").concat(element.ime, "</li>\n                    <li id=\"\" name=\"\">Prezime: ").concat(element.prezime, "</li>\n                    <li id=\"\" name=\"\">Email: ").concat(element.email, "</li>\n                    <li id=\"\" name=\"\">Naziv preduzeca: ").concat(element.naziv, "</li>\n                    <li id=\"\" name=\"\">Adresa preduzeca: ").concat(element.adresa, "</li>\n                    <li id=\"\" name=\"\">PIB:").concat(element.pib, "</li></ul>\n                    <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmeniPreduzeceHTML(").concat(element.pib, ")\">Izmena preduzeca</h3>\n                    <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"PregledajFaktureHTML(").concat(element.pib, ")\">Pregled faktura</h3>\n                    <hr>");
+                            div.innerHTML += "<h2>Preduzece ".concat(brojPreduzeca++, "</h2><ul id=\"").concat(element.pib, "\">\n                    <li id=\"\" name=\"\">Ime: ").concat(element.ime, "</li>\n                    <li id=\"\" name=\"\">Prezime: ").concat(element.prezime, "</li>\n                    <li id=\"\" name=\"\">Email: ").concat(element.email, "</li>\n                    <li id=\"\" name=\"\">Naziv preduzeca: ").concat(element.naziv, "</li>\n                    <li id=\"\" name=\"\">Adresa preduzeca: ").concat(element.adresa, "</li>\n                    <li id=\"\" name=\"\">PIB:").concat(element.pib, "</li></ul>\n                    <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmeniPreduzeceHTML(").concat(element.pib, ")\">Izmena preduzeca</h3>\n                    <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"PregledajFaktureHTML(").concat(element.pib, ",0)\">Pregled faktura</h3>\n                    <hr>");
                         });
                     }
                 })["catch"](function (err) { return console.log(err); });
@@ -111,12 +117,33 @@ var RadSaPreduzecima = /** @class */ (function () {
 var RadSaFakturama = /** @class */ (function () {
     function RadSaFakturama() {
     }
-    RadSaFakturama.PregledajFakture = function (div, pib) {
+    RadSaFakturama.PregledajFakture = function (div, pib, page) {
         var fakture = [];
-        fetch(URLovi.pregledFakturaPoPreduzecu + pib).then(function (r) { return r.json(); }).then(function (responce) {
-            console.log(responce);
-            div.innerHTML = "<div>".concat(RadSaFakturama.DetaljiFaktura(responce), "</div>");
-        })["catch"](function (err) { return alert("Ne postoje fakture za ovo preduzece"); });
+        var brojFaktura = 1;
+        fetch(URLovi.pregledFakturaPoPreduzecu + pib + "/" + page).then(function (r) { return r.json(); }).then(function (data) {
+            console.log(data);
+            div.innerHTML = "";
+            data.forEach(function (faktura) {
+                div.innerHTML += "<h2>Faktura ".concat(brojFaktura++, "</h2><ul id=\"").concat(faktura.id, "\">\n                <li id=\"\" name=\"\">PIBkome: ").concat(faktura.piBkome, "</li>\n                <li id=\"\" name=\"\">PIBodKoga: ").concat(faktura.piBodKoga, "</li>\n                <li id=\"\" name=\"\">DatumGenerisanja fakture : ").concat(faktura.datumGenerisanja, "</li>\n                <li id=\"\" name=\"\">DatumPlacanja fakture: ").concat(faktura.datumPlacanja, "</li>\n                <li id=\"\" name=\"\">Ukupna cena: ").concat(faktura.ukupnaCena, "</li>\n                <li id=\"\" name=\"\">Tip fakture: ").concat(faktura.tipFakture, "</li>\n                <li id=\"\" name=\"\">Naziv fakture : ").concat(faktura.naziv, "</li>\n                <li id=\"\" name=\"\">Cena po jedinici mere: ").concat(faktura.cenaPoJediniciMere, "</li>\n                <li id=\"\" name=\"\">Jedinica mere: ").concat(faktura.jedinicaMere, "</li>\n                <li id=\"\" name=\"\">Kolicina: ").concat(faktura.kolicina, "</li></ul>\n                <h3 style=\"color:rgb(35, 211, 235);cursor: pointer;\" onclick=\"IzmenifakturaHTML(").concat(faktura.id, ",").concat(faktura.piBkome, ")\">Izmeni fakturu</h3>\n                <hr>");
+            });
+            if (page < 0) {
+                page = 1;
+            }
+            div.innerHTML += "<button onclick=PregledajFaktureHTML(".concat(pib, ",").concat(page - 1, ")>Prethodna</button><button onclick=PregledajFaktureHTML(").concat(pib, ",").concat(page + 1, ")>Sledeca</button>");
+        })["catch"](function (err) {
+            alert("Nema vise faktura / nema faktura");
+        });
+        // document.querySelector("#prosla")!.addEventListener("click",()=>{
+        //     let page=parseInt(document.querySelector("#prosla")!.getAttribute("data-page")!);  
+        //     if(page<0){
+        //         page=0;
+        //     }
+        //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
+        //   })
+        //   document.querySelector("#sledeca")!.addEventListener("click",()=>{
+        //     let page=parseInt(document.querySelector("#sledeca")!.getAttribute("data-page")!);
+        //     RadSaFakturama.PregledajFakture(document.querySelector("#root")!,pib,page);
+        // })
     };
     RadSaFakturama.DetaljiFaktura = function (fakture) {
         console.log(fakture);
@@ -209,8 +236,8 @@ var DodajPreduzeceHTML = function () {
 var PretraziPreduzecaHTML = function () {
     RadSaPreduzecima.PretraziPreduzeca(document.querySelector("#root"));
 };
-var PregledajFaktureHTML = function (pib) {
-    RadSaFakturama.PregledajFakture(document.querySelector("#root"), pib);
+var PregledajFaktureHTML = function (pib, page) {
+    RadSaFakturama.PregledajFakture(document.querySelector("#root"), pib, page);
 };
 var PrikaziFaktureHTML = function () {
     RadSaFakturama.PrikaziFakture(document.querySelector("#root"));
